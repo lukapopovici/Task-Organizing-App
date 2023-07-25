@@ -16,6 +16,7 @@ function handleSubmit(event) {
 }
 function add_task(taskTitle, taskDesc, taskEmail) {
     const task = document.createElement('div');
+    task.id = "TaskID";
     task.innerHTML = `
       <strong>Title:</strong> ${taskTitle}<br>
       <strong>Description:</strong> ${taskDesc}<br>

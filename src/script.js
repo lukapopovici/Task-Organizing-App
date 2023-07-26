@@ -1,4 +1,20 @@
 
+function deleteTask(taskTitle, taskDesc, taskEmail) {
+  let existingData = localStorage.getItem('tasks');
+
+  if (existingData) {
+    existingData = JSON.parse(existingData);
+    if (Array.isArray(existingData)) {
+      const indexToDelete = existingData.findIndex(
+        (task) =>
+          task.title === taskTitle &&
+          task.description === taskDesc 
+      );
+        existingData.splice(indexToDelete, 1);
+        localStorage.setItem('tasks', JSON.stringify(existingData));
+      }
+    }
+}
 
 function writeDB(taskTitle, taskDesc, taskEmail) {
   let allTasks = localStorage.getItem('tasks');
@@ -35,6 +51,7 @@ function handleSubmit(event) {
     const dialog = document.getElementById('dialog');
     dialog.style.display = 'none';
     add_task(TI,TD,TE);
+    writeDB(TI,TD,TE);
 }
 
 function taskDone(button) {
@@ -48,6 +65,14 @@ function taskDone(button) {
   } 
 }
 
+function removeTask(button) {
+  const task = button.parentNode;
+  deleteTask(task.childNodes[2].textContent, task.childNodes[4].textContent);
+  console.log(task.childNodes[2].textContent, task.childNodes[4].textContent);
+  task.remove()
+}
+
+
 function add_task(taskTitle, taskDesc, taskEmail) {
 
   const task = document.createElement('div');
@@ -57,11 +82,10 @@ function add_task(taskTitle, taskDesc, taskEmail) {
     <strong>Title:</strong> ${taskTitle}<br>
     <strong>Description:</strong> ${taskDesc}<br>
     <strong>Email:</strong> ${taskEmail}<br>
-    <button onclick="this.parentNode.remove()">Remove</button><br>
+    <button onclick="removeTask(this)">Remove</button><br>
     <button onclick="taskDone(this)">Completed</button><br>
   `;
   document.getElementById('tasks').appendChild(task);
-  writeDB(taskTitle, taskDesc, taskEmail);
 }
 
   document.getElementById('FORM').addEventListener('submit', handleSubmit);

@@ -38,18 +38,18 @@ function loadTasksButton(){
   loadUncompletedOnly();
 }
 function deleteTask(taskTitle) {
-  console.log(taskTitle);
+  taskTitle = taskTitle.trim();
+
   let allTasks = localStorage.getItem('tasks');
 
   if (allTasks) {
     allTasks = JSON.parse(allTasks);
     if (Array.isArray(allTasks)) {
-      allTasks = allTasks.filter((task) => task.title !== taskTitle);
+      allTasks = allTasks.filter((task) => task.title.trim() !== taskTitle);
       localStorage.setItem('tasks', JSON.stringify(allTasks));
     }
   }
 }
-
 function writeDB(taskTitle, taskDesc, taskEmail,taskStatus) {
   let allTasks = localStorage.getItem('tasks');
   const newTask = {

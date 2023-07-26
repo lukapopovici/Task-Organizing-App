@@ -1,19 +1,26 @@
 
-function deleteTask(taskTitle, taskDesc, taskEmail) {
-  let existingData = localStorage.getItem('tasks');
-
-  if (existingData) {
-    existingData = JSON.parse(existingData);
-    if (Array.isArray(existingData)) {
-      const indexToDelete = existingData.findIndex(
-        (task) =>
-          task.title === taskTitle &&
-          task.description === taskDesc 
-      );
-        existingData.splice(indexToDelete, 1);
-        localStorage.setItem('tasks', JSON.stringify(existingData));
+function loadTasks() {
+  const allTasks = localStorage.getItem('tasks');
+  if (allTasks) {
+      const parsed = JSON.parse(allTasks);
+      for (const task of parsed) {
+        add_task(task.title, task.description, task.email);
+        console.log(task.title);
       }
+  } 
+}
+
+function deleteTask(taskTitle, taskDesc, taskEmail) {
+  console.log(taskTitle);
+  let allTasks = localStorage.getItem('tasks');
+
+  if (allTasks) {
+    allTasks = JSON.parse(allTasks);
+    if (Array.isArray(allTasks)) {
+      allTasks = allTasks.filter( (task) => task.title!== taskTitle);
+      localStorage.setItem('tasks', JSON.stringify(allTasks));
     }
+  }
 }
 
 function writeDB(taskTitle, taskDesc, taskEmail) {
@@ -87,5 +94,5 @@ function add_task(taskTitle, taskDesc, taskEmail) {
   `;
   document.getElementById('tasks').appendChild(task);
 }
-
+ loadTasks();
   document.getElementById('FORM').addEventListener('submit', handleSubmit);

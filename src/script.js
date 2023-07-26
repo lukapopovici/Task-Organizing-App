@@ -37,14 +37,14 @@ function loadTasksButton(){
   removeAllTasks();
   loadUncompletedOnly();
 }
-function deleteTask(taskTitle, taskDesc, taskEmail) {
+function deleteTask(taskTitle) {
   console.log(taskTitle);
   let allTasks = localStorage.getItem('tasks');
 
   if (allTasks) {
     allTasks = JSON.parse(allTasks);
     if (Array.isArray(allTasks)) {
-      allTasks = allTasks.filter((task) => task.title !== taskDesc);
+      allTasks = allTasks.filter((task) => task.title !== taskTitle);
       localStorage.setItem('tasks', JSON.stringify(allTasks));
     }
   }
@@ -112,8 +112,8 @@ function taskDone(button) {
 
 function removeTask(button) {
   const task = button.parentNode;
-  deleteTask(task.childNodes[2].textContent, task.childNodes[4].textContent);
-  console.log(task.childNodes[2].textContent, task.childNodes[4].textContent);
+  deleteTask(task.childNodes[2].textContent);
+  console.log(task.childNodes[2].textContent);
   task.remove()
 }
 

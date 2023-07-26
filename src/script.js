@@ -1,4 +1,26 @@
-var Task=0;
+
+
+function writeDB(taskTitle, taskDesc, taskEmail) {
+  let allTasks = localStorage.getItem('tasks');
+  const newTask = {
+    title: taskTitle,
+    description: taskDesc,
+    email: taskEmail
+  };
+
+  if (allTasks) {
+    allTasks = JSON.parse(allTasks);
+    if (Array.isArray(allTasks)) {
+      allTasks.push(newTask);
+    } else {
+      allTasks = [newTask];
+    }
+  } else {
+    allTasks = [newTask];
+  }
+
+  localStorage.setItem('tasks', JSON.stringify(allTasks));
+}
 
 function openDialog() {
     const dialog = document.getElementById('dialog');
@@ -39,7 +61,7 @@ function add_task(taskTitle, taskDesc, taskEmail) {
     <button onclick="taskDone(this)">Completed</button><br>
   `;
   document.getElementById('tasks').appendChild(task);
-
+  writeDB(taskTitle, taskDesc, taskEmail);
 }
 
   document.getElementById('FORM').addEventListener('submit', handleSubmit);

@@ -4,12 +4,39 @@ function loadTasks() {
   if (allTasks) {
       const parsed = JSON.parse(allTasks);
       for (const task of parsed) {
-        add_task(task.title, task.description, task.email);
+        add_task(task.title, task.description, task.email, task.status);
         console.log(task.title);
       }
   } 
 }
 
+function getAllTasksBack() {
+  removeAllTasks();
+  loadTasks();
+}
+
+function loadUncompletedOnly() {
+  const allTasks = localStorage.getItem('tasks');
+  if (allTasks) {
+      const parsed = JSON.parse(allTasks);
+      for (const task of parsed) {
+        if (task.status == 'False')
+        add_task(task.title, task.description, task.email, task.status);
+        console.log(task.title);
+      }
+  } 
+}
+
+function removeAllTasks() {
+  const elements = document.querySelectorAll('div#TaskID');
+  elements.forEach((element) => {
+    element.parentNode.removeChild(element);
+  });
+}
+function loadTasksButton(){
+  removeAllTasks();
+  loadUncompletedOnly();
+}
 function deleteTask(taskTitle, taskDesc, taskEmail) {
   console.log(taskTitle);
   let allTasks = localStorage.getItem('tasks');
@@ -17,18 +44,19 @@ function deleteTask(taskTitle, taskDesc, taskEmail) {
   if (allTasks) {
     allTasks = JSON.parse(allTasks);
     if (Array.isArray(allTasks)) {
-      allTasks = allTasks.filter( (task) => task.title!== taskTitle);
+      allTasks = allTasks.filter((task) => task.title !== taskDesc);
       localStorage.setItem('tasks', JSON.stringify(allTasks));
     }
   }
 }
 
-function writeDB(taskTitle, taskDesc, taskEmail) {
+function writeDB(taskTitle, taskDesc, taskEmail,taskStatus) {
   let allTasks = localStorage.getItem('tasks');
   const newTask = {
     title: taskTitle,
     description: taskDesc,
-    email: taskEmail
+    email: taskEmail,
+    status: taskStatus
   };
 
   if (allTasks) {
@@ -57,19 +85,29 @@ function handleSubmit(event) {
     const TE = document.getElementById('TaskAsignee').value;
     const dialog = document.getElementById('dialog');
     dialog.style.display = 'none';
-    add_task(TI,TD,TE);
-    writeDB(TI,TD,TE);
+    add_task(TI,TD,TE,'False');
+    writeDB(TI,TD,TE,'False');
 }
 
 function taskDone(button) {
-  const task = button.parentNode;
-  const isDone = task.getAttribute('isDone') === 'true';
+  const parentInnerHtml = button.parentNode.innerHTML;
+  const titleRegex = /<strong>Title:<\/strong> (.+?)<br>/;
+  const match = parentInnerHtml.match(titleRegex);
 
-  if (!isDone) {
-    task.setAttribute('isDone', 'true');
-    task.style.backgroundColor = 'green';
-    button.parentNode.removeChild(button);
-  } 
+  if (match && match[1]) {
+    const taskTitle = match[1];
+    const tasksData = JSON.parse(localStorage.getItem('tasks'));
+    const matchingTask = tasksData.find(task => task.title === taskTitle);
+
+    if (matchingTask) {
+      matchingTask.status = 'True';
+      localStorage.setItem('tasks', JSON.stringify(tasksData));
+    }
+  }
+
+  const task = button.parentNode;
+  task.style.backgroundColor = 'green';
+  button.parentNode.removeChild(button);
 }
 
 function removeTask(button) {
@@ -80,18 +118,22 @@ function removeTask(button) {
 }
 
 
-function add_task(taskTitle, taskDesc, taskEmail) {
+function add_task(taskTitle, taskDesc, taskEmail,taskStatus) {
 
   const task = document.createElement('div');
   task.id = "TaskID";
-  task.setAttribute('isDone', false);
   task.innerHTML = `
     <strong>Title:</strong> ${taskTitle}<br>
     <strong>Description:</strong> ${taskDesc}<br>
     <strong>Email:</strong> ${taskEmail}<br>
     <button onclick="removeTask(this)">Remove</button><br>
-    <button onclick="taskDone(this)">Completed</button><br>
   `;
+  if (taskStatus == 'True'){
+    task.style.backgroundColor = 'green';
+  }
+  else{
+    task.innerHTML += '<button onclick="taskDone(this)">Completed</button><br>';
+  }
   document.getElementById('tasks').appendChild(task);
 }
  loadTasks();

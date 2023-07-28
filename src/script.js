@@ -118,22 +118,23 @@ function removeTask(button) {
 }
 
 
-function add_task(taskTitle, taskDesc, taskEmail,taskStatus) {
+function add_task(taskTitle, taskDesc, taskEmail, taskStatus) {
 
   const task = document.createElement('div');
   task.id = "TaskID";
-  task.innerHTML = `
-    <strong>Title:</strong> ${taskTitle}<br>
-    <strong>Description:</strong> ${taskDesc}<br>
-    <strong>Email:</strong> ${taskEmail}<br>
-    <button onclick="removeTask(this)">Remove</button><br>
+  let taskContent = `
+      <strong>Title:</strong> ${taskTitle}<br>
+      <strong>Description:</strong> ${taskDesc}<br>
+      <strong>Email:</strong> ${taskEmail}<br>
+      <button onclick="removeTask(this)">Remove</button><br>
+      ${taskStatus == 'True' ? '' : '<button onclick="taskDone(this)">Completed</button><br>'}
   `;
-  if (taskStatus == 'True'){
+  task.innerHTML = taskContent;
+  
+  if (taskStatus == 'True') {
     task.style.backgroundColor = 'green';
   }
-  else{
-    task.innerHTML += '<button onclick="taskDone(this)">Completed</button><br>';
-  }
+
   document.getElementById('tasks').appendChild(task);
 }
  loadTasks();

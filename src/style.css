@@ -1,6 +1,41 @@
 #TaskID {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   display: block; 
-  margin: 0 auto; 
+  text-align: center;
+  margin-left: 400px;
+  margin-right: 400px;
+  margin-top: 20px;
+  background: rgb(10, 214, 204);
+  border: 3px solid black;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button {
+  background-color: #5e4caf;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5 auto;
+  margin-left: 40px;
+  margin-top: 20px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: green;
+}
+
+#buttons {
+  display: flex;
+  justify-content: center;
+}
+h1 {
+  text-align: center;
 }

@@ -1,10 +1,16 @@
+function closeDialog(){
+  dialog=document.getElementById('dialog');
+  const form = document.getElementById('FORM');
+  form.reset();
+  dialog.style.display='none';
+}
 
 function loadTasks() {
   const allTasks = localStorage.getItem('tasks');
   if (allTasks) {
       const parsed = JSON.parse(allTasks);
       for (const task of parsed) {
-        add_task(task.title, task.description, task.email, task.status);
+        AddTask(task.title, task.description, task.email, task.status);
         console.log(task.title);
       }
   } 
@@ -20,15 +26,15 @@ function loadUncompletedOnly() {
   if (allTasks) {
       const parsed = JSON.parse(allTasks);
       for (const task of parsed) {
-        if (task.status == 'False')
-        add_task(task.title, task.description, task.email, task.status);
+        if (task.status == 'not-completed')
+        AddTask(task.title, task.description, task.email, task.status);
         console.log(task.title);
       }
   } 
 }
 
 function removeAllTasks() {
-  const elements = document.querySelectorAll('div#TaskID');
+  const elements = document.querySelectorAll('div.taskID');
   elements.forEach((element) => {
     element.parentNode.removeChild(element);
   });
@@ -85,11 +91,11 @@ function handleSubmit(event) {
     const TE = document.getElementById('TaskAsignee').value;
     const dialog = document.getElementById('dialog');
     dialog.style.display = 'none';
-    add_task(TI,TD,TE,'False');
-    writeDB(TI,TD,TE,'False');
+    AddTask(TI,TD,TE,'not-completed');
+    writeDB(TI,TD,TE,'not-completed');
 }
 
-function taskDone(button) {
+function MarkTaskAsDone(button) {
   const parentInnerHtml = button.parentNode.innerHTML;
   const titleRegex = /<strong>Title:<\/strong> (.+?)<br>/;
   const match = parentInnerHtml.match(titleRegex);
@@ -100,7 +106,7 @@ function taskDone(button) {
     const matchingTask = tasksData.find(task => task.title === taskTitle);
 
     if (matchingTask) {
-      matchingTask.status = 'True';
+      matchingTask.status = 'completed';
       localStorage.setItem('tasks', JSON.stringify(tasksData));
     }
   }
@@ -118,20 +124,20 @@ function removeTask(button) {
 }
 
 
-function add_task(taskTitle, taskDesc, taskEmail, taskStatus) {
+function AddTask(taskTitle, taskDesc, taskEmail, taskStatus) {
 
   const task = document.createElement('div');
-  task.id = "TaskID";
+  task.className = "taskID";
   let taskContent = `
       <strong>Title:</strong> ${taskTitle}<br>
       <strong>Description:</strong> ${taskDesc}<br>
       <strong>Email:</strong> ${taskEmail}<br>
       <button onclick="removeTask(this)">Remove</button><br>
-      ${taskStatus == 'True' ? '' : '<button onclick="taskDone(this)">Completed</button><br>'}
+      ${taskStatus == 'completed' ? '' : '<button onclick="MarkTaskAsDone(this)">Completed</button><br>'}
   `;
   task.innerHTML = taskContent;
   
-  if (taskStatus == 'True') {
+  if (taskStatus == 'completed') {
     task.style.backgroundColor = 'green';
   }
 
@@ -139,3 +145,15 @@ function add_task(taskTitle, taskDesc, taskEmail, taskStatus) {
 }
  loadTasks();
   document.getElementById('FORM').addEventListener('submit', handleSubmit);
+
+// event listener sa resetez formul
+  const form = document.getElementById('FORM');
+
+  form.addEventListener('submit', function (event) {
+      event.preventDefault(); 
+      submitForm();
+  });
+  
+  function submitForm() {
+      form.reset();
+  }
